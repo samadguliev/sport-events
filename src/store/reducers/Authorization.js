@@ -1,5 +1,6 @@
 export const initialState = {
   authorization: [],
+  accessToken: '',
 };
 
 export function Authorization (state = initialState, payload) {
@@ -8,6 +9,7 @@ export function Authorization (state = initialState, payload) {
       return {
         ...state,
         authorization: payload.payload,
+        accessToken: payload.payload.data.token
       };
     default:
       return state
