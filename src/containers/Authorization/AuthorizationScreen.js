@@ -27,7 +27,6 @@ const AuthorizationScreen = () => {
   };
 
   if (userData.data && userData.data.id) {
-    console.log(userData);
     navigate('MainScreen');
   }
 
@@ -57,6 +56,7 @@ const AuthorizationScreen = () => {
         style={styles.input}
         placeholder="Password"
         value={password}
+        secureTextEntry={true}
         onChangeText={text => {
           setPassword(text);
         }}
