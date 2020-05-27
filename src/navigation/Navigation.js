@@ -1,11 +1,11 @@
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 // import { MainLayer } from "./MainLayer";
 import { AuthLayer } from "./AuthLayer";
+import { MainLayer } from "./MainLayer";
 
-export const firstSeenScreen = 'Education';
 const AppNavigator = createSwitchNavigator({
   Unauthorized: AuthLayer,
-  // Authorized: MainLayer,
+  Authorized: MainLayer,
 },{
   initialRouteName: "Unauthorized",
   cardStyle: { shadowColor: 'transparent' },

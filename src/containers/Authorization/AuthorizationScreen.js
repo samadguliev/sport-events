@@ -19,11 +19,17 @@ const AuthorizationScreen = () => {
   const [password, setPassword] = useState('');
   const userData = useSelector(state => state.Authorization.authorization);
 
+
   const dispatch = useDispatch();
 
   const checkUser = () => {
     dispatch(setAuthorization(login, password));
   };
+
+  if (userData.data && userData.data.id) {
+    console.log(userData);
+    navigate('MainScreen');
+  }
 
   useEffect(() => {
 
