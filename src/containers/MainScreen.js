@@ -42,13 +42,21 @@ const MainScreen = () => {
         </View>
       }
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigate('TrainingList');
+        }}>
         <Text style={styles.buttonText}>
           Записаться на тренировку
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigate('MyRegistration');
+        }}>
         <Text style={styles.buttonText}>
           Мои записи
         </Text>

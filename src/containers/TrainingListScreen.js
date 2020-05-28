@@ -12,13 +12,16 @@ import {useDispatch, useSelector} from "react-redux";
 import { useNavigation } from 'react-navigation-hooks';
 
 import {getTrainings, removeTraining} from "../store/actions/trainings";
+import {addEnrollment} from "../store/actions/enrollment";
 
 const TrainingListScreen = () => {
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
+  const userData = useSelector(state => state.Authorization.authorization);
   const accessToken = useSelector(state => state.Authorization.accessToken);
   const trainings = useSelector(state => state.Trainings.trainings);
 
+  const userId = userData.data.id;
 
   useEffect(() => {
     dispatch(getTrainings(accessToken));
@@ -30,48 +33,74 @@ const TrainingListScreen = () => {
         Список тренировок
       </Text>
 
-      {trainings.map((item) => (
-        <View style={styles.itemBlock}>
-          <Text style={styles.itemTitle}>{item.name}</Text>
-          <View style={styles.itemRow}>
-            <Text>Дата</Text>
-            <Text>{item.date}</Text>
-          </View>
-          <View style={styles.itemRow}>
-            <Text>Длительность</Text>
-            <Text>{item.duration}</Text>
-          </View>
-          <View style={styles.itemRow}>
-            <TouchableOpacity onPress={() => {
-              navigate('AddTraining', {id: item.id});
-            }}>
-              <Text style={styles.remove}>
-                Редактировать
-              </Text>
-            </TouchableOpacity>
+      <View style={{ marginBottom: 30 }}>
+        {trainings.map((item) => (
+          <View style={styles.itemBlock}>
+            <Text style={styles.itemTitle}>{item.name}</Text>
+            <View style={styles.itemRow}>
+              <Text>Дата</Text>
+              <Text>{item.date}</Text>
+            </View>
+            <View style={styles.itemRow}>
+              <Text>Длительность</Text>
+              <Text>{item.duration}</Text>
+            </View>
+            {userId === 2005 &&
+            <View style={styles.itemRow}>
+              <TouchableOpacity onPress={() => {
+                navigate('AddTraining', {id: item.id});
+              }}>
+                <Text style={styles.remove}>
+                  Редактировать
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => {
-              Alert.alert(
-                'Удалить тренировку?',
-                '',
-                [
-                  {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel'
-                  },
-                  { text: 'OK', onPress: () => dispatch(removeTraining(item.id, accessToken)) }
-                ],
-                { cancelable: false }
-              );
-            }}>
-              <Text style={styles.remove}>
-                Удалить
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                Alert.alert(
+                  'Удалить тренировку?',
+                  '',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel'
+                    },
+                    {text: 'OK', onPress: () => dispatch(removeTraining(item.id, accessToken))}
+                  ],
+                  {cancelable: false}
+                );
+              }}>
+                <Text style={styles.remove}>
+                  Удалить
+                </Text>
+              </TouchableOpacity>
+            </View>
+            }
+            <View style={styles.itemRow}>
+              <TouchableOpacity onPress={() => {
+                Alert.alert(
+                  `Записаться на "${item.name}" ?`,
+                  '',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel'
+                    },
+                    {text: 'OK', onPress: () => dispatch(addEnrollment(item.id, accessToken))}
+                  ],
+                  {cancelable: false}
+                );
+                // navigate('AddTraining', {id: item.id});
+              }}>
+                <Text style={styles.remove}>
+                  Записаться на тренировку
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      ))}
+        ))}
+      </View>
 
     </ScrollView>
   )

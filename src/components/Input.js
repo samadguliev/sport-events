@@ -17,7 +17,6 @@ const Input = (props) => {
         placeholder={props.placeholder}
         value={props.value}
         onChangeText={text => {
-          console.log(text);
           props.onChangeText(text);
         }}
         style={styles.input}
