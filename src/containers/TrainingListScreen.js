@@ -87,7 +87,7 @@ const TrainingListScreen = () => {
                       onPress: () => console.log('Cancel Pressed'),
                       style: 'cancel'
                     },
-                    {text: 'OK', onPress: () => dispatch(addEnrollment(item.id, accessToken))}
+                    {text: 'OK', onPress: () => dispatch(addEnrollment(item.id, userId, accessToken))}
                   ],
                   {cancelable: false}
                 );

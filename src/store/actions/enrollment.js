@@ -25,9 +25,10 @@ export function getEnrollment(accessToken) {
   }
 }
 
-export function addEnrollment(trainingId, accessToken) {
+export function addEnrollment(trainingId, userId, accessToken) {
   const params = new URLSearchParams({
-    trainingId
+    trainingId,
+    userId
   });
   return dispatch => {
     axios({
