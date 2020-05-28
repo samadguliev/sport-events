@@ -20,15 +20,26 @@ const MainScreen = () => {
 
       {/* if admin */}
       {userData.data.id === 2005 &&
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigate('AddTraining');
-          }}>
-          <Text style={styles.buttonText}>
-            Создать тренировку
-          </Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigate('AddTraining');
+            }}>
+            <Text style={styles.buttonText}>
+              Создать тренировку
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigate('TrainingList');
+            }}>
+            <Text style={styles.buttonText}>
+              Список тренировок
+            </Text>
+          </TouchableOpacity>
+        </View>
       }
 
       <TouchableOpacity style={styles.button}>
