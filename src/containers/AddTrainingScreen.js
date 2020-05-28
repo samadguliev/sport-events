@@ -1,4 +1,4 @@
-import React, {useState}  from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -7,17 +7,25 @@ import {
 } from "react-native";
 
 import {useDispatch, useSelector} from 'react-redux';
+import { useNavigation } from 'react-navigation-hooks';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {Input} from "../components/Input";
 
-import {addTraining} from "../store/actions/trainings";
+import {addTraining, getTraining} from "../store/actions/trainings";
 
 const AddTrainingScreen = () => {
   const dispatch = useDispatch();
 
   const accessToken = useSelector(state => state.Authorization.accessToken);
+
+  let id = 0;
+  if (useNavigation().state.params && useNavigation().state.params.id) {
+    id = useNavigation() ? useNavigation().state.params.id : 0;
+  }
+  const trainingItem = useSelector(state => state.Trainings.training);
+
 
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
@@ -51,8 +59,21 @@ const AddTrainingScreen = () => {
   };
 
   const setTraining = () => {
-    dispatch(addTraining(name, date, time, duration, accessToken))
+    dispatch(addTraining(name, date, time, duration, accessToken, id))
   };
+
+  useEffect(() => {
+    if(id > 0) {
+      dispatch(getTraining(id, accessToken));
+    }
+  }, []);
+
+  useEffect(() => {
+    if(id > 0 && trainingItem) {
+      setName(trainingItem.name);
+      setDuration(trainingItem.duration);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>

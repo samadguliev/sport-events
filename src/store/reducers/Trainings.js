@@ -1,5 +1,6 @@
 export const initialState = {
   trainings: [],
+  training: {},
 };
 
 export function Trainings (state = initialState, payload) {
@@ -8,6 +9,11 @@ export function Trainings (state = initialState, payload) {
       return {
         ...state,
         trainings: payload.payload,
+      };
+    case 'GET_TRAINING':
+      return {
+        ...state,
+        training: payload.payload,
       };
     default:
       return state

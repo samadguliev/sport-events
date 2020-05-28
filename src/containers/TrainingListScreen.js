@@ -4,15 +4,17 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Alert
 } from "react-native";
 
 import {useDispatch, useSelector} from "react-redux";
+import { useNavigation } from 'react-navigation-hooks';
 
 import {getTrainings, removeTraining} from "../store/actions/trainings";
 
 const TrainingListScreen = () => {
-
+  const { navigate } = useNavigation();
   const dispatch = useDispatch();
   const accessToken = useSelector(state => state.Authorization.accessToken);
   const trainings = useSelector(state => state.Trainings.trainings);
@@ -39,13 +41,35 @@ const TrainingListScreen = () => {
             <Text>Длительность</Text>
             <Text>{item.duration}</Text>
           </View>
-          <TouchableOpacity onPress={() => {
-            dispatch(removeTraining(item.id, accessToken))
-          }}>
-            <Text style={styles.remove}>
-              Удалить
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.itemRow}>
+            <TouchableOpacity onPress={() => {
+              navigate('AddTraining', {id: item.id});
+            }}>
+              <Text style={styles.remove}>
+                Редактировать
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => {
+              Alert.alert(
+                'Удалить тренировку?',
+                '',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                  },
+                  { text: 'OK', onPress: () => dispatch(removeTraining(item.id, accessToken)) }
+                ],
+                { cancelable: false }
+              );
+            }}>
+              <Text style={styles.remove}>
+                Удалить
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       ))}
 
@@ -89,7 +113,7 @@ const styles = StyleSheet.create({
     color: '#0050ff',
     borderBottomColor: '#0050ff',
     borderBottomWidth: 1,
-    width: 60,
+    width: 'auto',
   }
 });
 
