@@ -9,7 +9,7 @@ export function Authorization (state = initialState, payload) {
       return {
         ...state,
         authorization: payload.payload,
-        accessToken: payload.payload.data.token
+        accessToken: payload.payload.token
       };
     default:
       return state

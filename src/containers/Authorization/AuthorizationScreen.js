@@ -10,29 +10,32 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 
-import {setAuthorization} from "../../store/actions/authorization";
+import {getAuthCode, setAuthorization} from "../../store/actions/authorization";
 
 const AuthorizationScreen = () => {
 
   const { navigate } = useNavigation();
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const userData = useSelector(state => state.Authorization.authorization);
 
+  const [number, setNumber] = useState('');
+  const [code, setCode] = useState('');
+  const [codeButton, setCodeButton] = useState(false);
+
+  const userData = useSelector(state => state.Authorization.authorization);
 
   const dispatch = useDispatch();
 
-  const checkUser = () => {
-    dispatch(setAuthorization(login, password));
+  const getCode = () => {
+    setCodeButton(true);
+    dispatch(getAuthCode(number));
   };
 
-  if (userData.data && userData.data.id) {
+  const checkUser = () => {
+    dispatch(setAuthorization(number, code));
+  };
+
+  if (userData && userData.token) {
     navigate('MainScreen');
   }
-
-  useEffect(() => {
-
-  }, []);
 
   return (
     <View style={styles.screenContainer}>
@@ -44,30 +47,46 @@ const AuthorizationScreen = () => {
           Неверный логин и/или пароль
         </Text>
       }
-      <TextInput
-        style={styles.input}
-        placeholder="Login"
-        value={login}
-        onChangeText={text => {
-          setLogin(text);
-        }}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        secureTextEntry={true}
-        onChangeText={text => {
-          setPassword(text);
-        }}
-      />
-      <TouchableOpacity style={styles.button}
-        onPress={checkUser}
-      >
-        <Text style={styles.buttonText}>
-          Войти
-        </Text>
-      </TouchableOpacity>
+
+      {!codeButton &&
+        <View style={{ alignItems: 'center', }} >
+          <TextInput
+            style={styles.input}
+            placeholder="Номер телефона"
+            value={number}
+            keyboardType = 'numeric'
+            onChangeText={text => {
+              setNumber(text);
+            }}
+          />
+          <TouchableOpacity style={styles.button} onPress={() => {
+            getCode();
+          }}>
+            <Text style={styles.buttonText}>
+              Получить код
+            </Text>
+          </TouchableOpacity>
+        </View>
+      }
+
+      {codeButton &&
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Код из СМС"
+            value={code}
+            keyboardType = 'numeric'
+            onChangeText={text => {
+              setCode(text);
+            }}
+          />
+          <TouchableOpacity style={styles.button} onPress={checkUser}>
+            <Text style={styles.buttonText}>
+              Войти
+            </Text>
+          </TouchableOpacity>
+        </View>
+      }
     </View>
   )
 };
