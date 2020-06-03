@@ -1,13 +1,12 @@
 import React, {useEffect, useState}  from 'react';
 import {
   Text,
-  TextInput,
   StyleSheet,
   View,
-  TouchableOpacity, ScrollView
+  ScrollView
 } from "react-native";
 
-import {defaultStyles} from '../styles/style'
+import {MaterialIndicator} from 'react-native-indicators';
 
 import {useDispatch, useSelector} from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
@@ -21,8 +20,8 @@ const MainScreen = () => {
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
 
-  const userData = useSelector(state => state.Authorization.authorization);
   const gymsData = useSelector(state => state.Gyms.gyms);
+  const areLoading = useSelector(state => state.Gyms.gymsAreLoading);
 
   useEffect(() => {
     dispatch(getGymList());
@@ -30,37 +29,47 @@ const MainScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        {gymsData.map((item) => (
-          <GymItem item={item} />
-        ))}
+      <Text style={styles.pageTitle}>Список залов</Text>
 
-        <TouchableOpacity
-          style={{
-            ...styles.button,
-            ...defaultStyles.shadowBlock,
-          }}
-          onPress={() => {
-            navigate('TrainingList');
-          }}>
-          <Text style={styles.buttonText}>
-            Записаться на тренировку
-          </Text>
-        </TouchableOpacity>
+      {areLoading &&
+        <View>
+          <MaterialIndicator color='#0C80B1' />
+        </View>
+      }
 
-        <TouchableOpacity
-          style={{
-            ...styles.button,
-            ...defaultStyles.shadowBlock,
-          }}
-          onPress={() => {
-            navigate('MyRegistration');
-          }}>
-          <Text style={styles.buttonText}>
-            Мои записи
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+      {!areLoading && gymsData &&
+        <ScrollView style={{width: '100%',}}>
+          {gymsData.map((item) => (
+            <GymItem item={item}/>
+          ))}
+
+          {/*<TouchableOpacity
+            style={{
+              ...styles.button,
+              ...defaultStyles.shadowBlock,
+            }}
+            onPress={() => {
+              navigate('TrainingList');
+            }}>
+            <Text style={styles.buttonText}>
+              Записаться на тренировку
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              ...styles.button,
+              ...defaultStyles.shadowBlock,
+            }}
+            onPress={() => {
+              navigate('MyRegistration');
+            }}>
+            <Text style={styles.buttonText}>
+              Мои записи
+            </Text>
+          </TouchableOpacity>*/}
+        </ScrollView>
+      }
 
       {/* if admin */}
       {/*{userData.data.id === 2005 &&*/}
@@ -98,6 +107,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 30,
     paddingVertical: 30,
+  },
+  pageTitle: {
+    fontSize: 30,
+    marginBottom: 20,
+    fontWeight: 'bold'
   },
   button: {
     width: 350,

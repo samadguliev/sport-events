@@ -11,72 +11,80 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import { useNavigation } from 'react-navigation-hooks';
 
-import {getTrainings, removeTraining} from "../store/actions/trainings";
-import {addEnrollment} from "../store/actions/enrollment";
+import {getTrainings} from "../store/actions/trainings";
+
+import {ItemRow} from "../components/ItemRow";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from "moment";
 
 const TrainingListScreen = () => {
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
-  const userData = useSelector(state => state.Authorization.authorization);
-  const accessToken = useSelector(state => state.Authorization.accessToken);
+
+  const gymId = useNavigation().state.params.id;
   const trainings = useSelector(state => state.Trainings.trainings);
 
-  const userId = userData.data.id;
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
+
+  const displayedDate = moment(date.toISOString()).format( `DD.MM.YYYY`);
+
+  const getState = (number) => {
+    const stateArray = [
+      'Доступна запись',
+      'Идет занятие',
+      'Запись недоступна',
+    ];
+    return stateArray[number];
+  };
+
+  const onChange = (event, selectedDate) => {
+    setShow(false);
+    const currentDate = selectedDate ? selectedDate : date;
+    setDate(currentDate);
+    dispatch(getTrainings(gymId, currentDate));
+  };
 
   useEffect(() => {
-    dispatch(getTrainings(accessToken));
+    dispatch(getTrainings(gymId, date));
   }, []);
   return (
     <ScrollView style={styles.container}>
 
       <Text style={styles.title}>
-        Список тренировок
+        Список тренировок на {displayedDate}
       </Text>
+      <TouchableOpacity onPress={() => {setShow(true)}}>
+        <Text style={styles.datePickText}>
+          Выбрать дату
+        </Text>
+      </TouchableOpacity>
+
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          timeZoneOffsetInMinutes={0}
+          value={date}
+          mode='date'
+          is24Hour={true}
+          display="default"
+          onChange={onChange}
+          minimumDate={new Date()}
+        />
+      )}
 
       <View style={{ marginBottom: 30 }}>
         {trainings.map((item) => (
           <View style={styles.itemBlock}>
             <Text style={styles.itemTitle}>{item.name}</Text>
-            <View style={styles.itemRow}>
-              <Text>Дата</Text>
-              <Text>{item.date}</Text>
-            </View>
-            <View style={styles.itemRow}>
-              <Text>Длительность</Text>
-              <Text>{item.duration}</Text>
-            </View>
-            {userId === 2005 &&
-            <View style={styles.itemRow}>
-              <TouchableOpacity onPress={() => {
-                navigate('AddTraining', {id: item.id});
-              }}>
-                <Text style={styles.remove}>
-                  Редактировать
-                </Text>
-              </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => {
-                Alert.alert(
-                  'Удалить тренировку?',
-                  '',
-                  [
-                    {
-                      text: 'Cancel',
-                      onPress: () => console.log('Cancel Pressed'),
-                      style: 'cancel'
-                    },
-                    {text: 'OK', onPress: () => dispatch(removeTraining(item.id, accessToken))}
-                  ],
-                  {cancelable: false}
-                );
-              }}>
-                <Text style={styles.remove}>
-                  Удалить
-                </Text>
-              </TouchableOpacity>
-            </View>
-            }
-            <View style={styles.itemRow}>
+            <ItemRow label="Начало" text={item.start} />
+            <ItemRow label="Конец" text={item.end} />
+            <ItemRow label="Количество мест" text={item.avaiable} />
+            <ItemRow label="Записанных клиентов" text={item.registered} />
+            <ItemRow label="Статус" text={getState(item.state)} />
+
+            {/* <View style={styles.itemRow}>
               <TouchableOpacity onPress={() => {
                 Alert.alert(
                   `Записаться на "${item.name}" ?`,
@@ -87,7 +95,7 @@ const TrainingListScreen = () => {
                       onPress: () => console.log('Cancel Pressed'),
                       style: 'cancel'
                     },
-                    {text: 'OK', onPress: () => dispatch(addEnrollment(item.id, userId, accessToken))}
+                    {text: 'OK', onPress: () => dispatch(addEnrollment())}
                   ],
                   {cancelable: false}
                 );
@@ -97,7 +105,7 @@ const TrainingListScreen = () => {
                   Записаться на тренировку
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         ))}
       </View>
@@ -117,6 +125,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 30
+  },
+  datePickText: {
+    fontSize: 18,
+    color: 'blue',
+    textDecorationLine: 'underline',
+    marginBottom: 10,
   },
   itemBlock: {
     backgroundColor: '#fff',

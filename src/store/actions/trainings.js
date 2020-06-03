@@ -40,19 +40,20 @@ export function addTraining(name, date, time, duration, accessToken, id = 0) {
   }
 }
 
-export function getTrainings(accessToken) {
+export function getTrainings(gymId, date) {
+  const trainingDate = moment(date.toISOString()).format( `YYYY-MM-DD`);
   return dispatch => {
     axios({
-      url: `${strings.base_url}/trainings/`,
+      url: `${strings.base_url}/gym/${gymId}/tt/${trainingDate}`,
       method: 'get',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          dispatch({type: GET_TRAININGS, payload: response.data});
+          dispatch({type: GET_TRAININGS, payload: response.data.tt});
         }
       })
   }
@@ -71,24 +72,6 @@ export function getTraining(id, accessToken) {
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           dispatch({type: GET_TRAINING, payload: response.data});
-        }
-      })
-  }
-}
-
-export function removeTraining(id, accessToken) {
-  return dispatch => {
-    axios({
-      url: `${strings.base_url}/trainings/${id}/delete/`,
-      method: 'post',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-      .then((response) => {
-        if (response.status >= 200 && response.status < 300) {
-          dispatch(getTrainings(accessToken));
         }
       })
   }
