@@ -12,8 +12,10 @@ import {useDispatch, useSelector} from "react-redux";
 import { useNavigation } from 'react-navigation-hooks';
 
 import {getTrainings} from "../store/actions/trainings";
+import {addEnrollment} from "../store/actions/enrollment";
 
 import {ItemRow} from "../components/ItemRow";
+
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 
@@ -84,28 +86,31 @@ const TrainingListScreen = () => {
             <ItemRow label="Записанных клиентов" text={item.registered} />
             <ItemRow label="Статус" text={getState(item.state)} />
 
-            {/* <View style={styles.itemRow}>
-              <TouchableOpacity onPress={() => {
-                Alert.alert(
-                  `Записаться на "${item.name}" ?`,
-                  '',
-                  [
-                    {
-                      text: 'Cancel',
-                      onPress: () => console.log('Cancel Pressed'),
-                      style: 'cancel'
-                    },
-                    {text: 'OK', onPress: () => dispatch(addEnrollment())}
-                  ],
-                  {cancelable: false}
-                );
-                // navigate('AddTraining', {id: item.id});
-              }}>
-                <Text style={styles.remove}>
-                  Записаться на тренировку
-                </Text>
-              </TouchableOpacity>
-            </View> */}
+            {item.state === 0 &&
+              <View style={styles.itemRow}>
+                <TouchableOpacity onPress={() => {
+                  Alert.alert(
+                    `Записаться на "${item.name}" ?`,
+                    '',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel'
+                      },
+                      {text: 'OK', onPress: () => {
+                          dispatch(addEnrollment(item.id, date, gymId));
+                        }}
+                    ],
+                    {cancelable: false}
+                  );
+                }}>
+                  <Text style={styles.remove}>
+                    Записаться на тренировку
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            }
           </View>
         ))}
       </View>
@@ -144,7 +149,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   itemTitle: {
-    fontSize: 22
+    fontSize: 22,
+    marginBottom: 10,
   },
   itemRow: {
     marginTop: 13,

@@ -28,10 +28,12 @@ const GymItem = ({ item }) => {
     }}>
 
       <View style={styles.logoBlock}>
+        {item.logo !== null &&
         <Image
           style={styles.logo}
-          source={{uri: `${item.logo}`}}
+          source={item.logo ? {uri: `${item.logo}`} : null}
         />
+        }
       </View>
 
       <View style={styles.textBlock}>

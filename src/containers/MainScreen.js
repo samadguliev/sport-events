@@ -3,97 +3,44 @@ import {
   Text,
   StyleSheet,
   View,
-  ScrollView
+  TouchableOpacity
 } from "react-native";
 
-import {MaterialIndicator} from 'react-native-indicators';
-
-import {useDispatch, useSelector} from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
-
-import {getGymList} from "../store/actions/gyms";
-
-import {GymItem} from './GymItem';
+import {defaultStyles} from "../styles/style";
 
 const MainScreen = () => {
 
   const { navigate } = useNavigation();
-  const dispatch = useDispatch();
-
-  const gymsData = useSelector(state => state.Gyms.gyms);
-  const areLoading = useSelector(state => state.Gyms.gymsAreLoading);
-
-  useEffect(() => {
-    dispatch(getGymList());
-  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.pageTitle}>Список залов</Text>
 
-      {areLoading &&
-        <View>
-          <MaterialIndicator color='#0C80B1' />
-        </View>
-      }
+      <TouchableOpacity
+        style={{
+          ...styles.button,
+          ...defaultStyles.shadowBlock,
+        }}
+        onPress={() => {
+          navigate('GymsScreen');
+        }}>
+        <Text style={styles.buttonText}>
+          Записаться на тренировку
+        </Text>
+      </TouchableOpacity>
 
-      {!areLoading && gymsData &&
-        <ScrollView style={{width: '100%',}}>
-          {gymsData.map((item) => (
-            <GymItem item={item}/>
-          ))}
-
-          {/*<TouchableOpacity
-            style={{
-              ...styles.button,
-              ...defaultStyles.shadowBlock,
-            }}
-            onPress={() => {
-              navigate('TrainingList');
-            }}>
-            <Text style={styles.buttonText}>
-              Записаться на тренировку
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              ...styles.button,
-              ...defaultStyles.shadowBlock,
-            }}
-            onPress={() => {
-              navigate('MyRegistration');
-            }}>
-            <Text style={styles.buttonText}>
-              Мои записи
-            </Text>
-          </TouchableOpacity>*/}
-        </ScrollView>
-      }
-
-      {/* if admin */}
-      {/*{userData.data.id === 2005 &&*/}
-      {/*  <View>*/}
-      {/*    <TouchableOpacity*/}
-      {/*      style={styles.button}*/}
-      {/*      onPress={() => {*/}
-      {/*        navigate('AddTraining');*/}
-      {/*      }}>*/}
-      {/*      <Text style={styles.buttonText}>*/}
-      {/*        Создать тренировку*/}
-      {/*      </Text>*/}
-      {/*    </TouchableOpacity>*/}
-      {/*    <TouchableOpacity*/}
-      {/*      style={styles.button}*/}
-      {/*      onPress={() => {*/}
-      {/*        navigate('TrainingList');*/}
-      {/*      }}>*/}
-      {/*      <Text style={styles.buttonText}>*/}
-      {/*        Список тренировок*/}
-      {/*      </Text>*/}
-      {/*    </TouchableOpacity>*/}
-      {/*  </View>*/}
-      {/*}*/}
+      <TouchableOpacity
+        style={{
+          ...styles.button,
+          ...defaultStyles.shadowBlock,
+        }}
+        onPress={() => {
+          navigate('MyRegistration');
+        }}>
+        <Text style={styles.buttonText}>
+          Мои записи
+        </Text>
+      </TouchableOpacity>
 
     </View>
   );
@@ -107,11 +54,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 30,
     paddingVertical: 30,
-  },
-  pageTitle: {
-    fontSize: 30,
-    marginBottom: 20,
-    fontWeight: 'bold'
   },
   button: {
     width: 350,

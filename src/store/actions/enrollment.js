@@ -1,13 +1,15 @@
 import axios from "axios";
 import strings from "../../utils/strings";
+import moment from "moment";
+
+import {getTrainings} from "./trainings";
 
 export const GET_ENROLLMENT = 'GET_ENROLLMENT';
 
-export function getEnrollment(accessToken) {
-
+export function getEnrollment(gyms, accessToken) {
   return dispatch => {
     axios({
-      url: `${strings.base_url}/enrollment/`,
+      url: `${strings.base_url}/scheduler/records/gym/${gyms}`,
       method: 'get',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -16,7 +18,8 @@ export function getEnrollment(accessToken) {
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          dispatch({type: GET_ENROLLMENT, payload: response.data});
+          const list = response.data.records.filter(item => (item.deleted === null || item.deleted === 0));
+          dispatch({type: GET_ENROLLMENT, payload: list});
         }
       })
       .catch(error => {
@@ -25,24 +28,24 @@ export function getEnrollment(accessToken) {
   }
 }
 
-export function addEnrollment(trainingId, userId, accessToken) {
+export function addEnrollment(trainingId, date, gymId) {
+  const trainingDate = moment(date.toISOString()).format( `YYYY-MM-DD`);
   const params = new URLSearchParams({
     trainingId,
-    userId
+    date: trainingDate
   });
   return dispatch => {
     axios({
-      url: `${strings.base_url}/enrollment/add/`,
-      method: 'post',
+      url: `${strings.base_url}/scheduler/add?id=${trainingId}&date=${trainingDate}&cnt=1&childs=0`,
+      method: 'get',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      data: params,
+      params,
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          dispatch(getEnrollment(accessToken));
+          dispatch(getTrainings(gymId, date));
         }
       })
       .catch(error => {
@@ -51,23 +54,18 @@ export function addEnrollment(trainingId, userId, accessToken) {
   }
 }
 
-export function removeEnrollment(trainingId, accessToken) {
-  const params = new URLSearchParams({
-    trainingId
-  });
+export function removeEnrollment(trainingId, gymsIds) {
   return dispatch => {
     axios({
-      url: `${strings.base_url}/enrollment/delete/`,
-      method: 'post',
+      url: `${strings.base_url}/scheduler/cancel?record_id=${trainingId}`,
+      method: 'get',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      data: params,
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          dispatch(getEnrollment(accessToken));
+          dispatch(getEnrollment(gymsIds.join(',')));
         }
       })
       .catch(error => {
