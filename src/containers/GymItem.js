@@ -21,6 +21,7 @@ const GymItem = ({ item }) => {
 
   return(
     <TouchableOpacity
+      key={item.id}
       onPress={() => { goToTrainingList() }}
       style={{
       ...defaultStyles.shadowBlock,

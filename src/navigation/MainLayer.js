@@ -2,7 +2,6 @@ import React from "react";
 import { createStackNavigator } from 'react-navigation-stack';
 
 import { MainScreen } from '../containers/MainScreen';
-import {AddTrainingScreen} from "../containers/AddTrainingScreen";
 import {TrainingListScreen} from "../containers/TrainingListScreen";
 import {MyRegistrationScreen} from "../containers/MyRegistrationScreen";
 import {GymsScreen} from "../containers/GymsScreen";
@@ -17,13 +16,6 @@ const MainLayer = createStackNavigator({
   },
   GymsScreen: {
     screen: GymsScreen,
-    navigationOptions: ({
-      header: null,
-      headerBackTitle: null
-    })
-  },
-  AddTraining: {
-    screen: AddTrainingScreen,
     navigationOptions: ({
       header: null,
       headerBackTitle: null

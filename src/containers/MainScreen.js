@@ -5,6 +5,8 @@ import {
   View,
   TouchableOpacity
 } from "react-native";
+import { YellowBox } from 'react-native';
+YellowBox.ignoreWarnings(['Warning: ...']);
 
 import { useNavigation } from 'react-navigation-hooks';
 import {defaultStyles} from "../styles/style";

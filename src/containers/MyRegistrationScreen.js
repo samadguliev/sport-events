@@ -49,7 +49,7 @@ const MyRegistrationScreen = () => {
       </Text>
 
       {enrollment.map((item) => (
-        <View style={styles.itemBlock}>
+        <View style={styles.itemBlock} key={item.id}>
           <Text style={styles.itemTitle}>{item.activity_name}</Text>
 
           <ItemRow label="Дата" text={item.activitydate} />

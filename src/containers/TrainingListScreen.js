@@ -77,7 +77,7 @@ const TrainingListScreen = () => {
 
       <View style={{ marginBottom: 30 }}>
         {trainings.map((item) => (
-          <View style={styles.itemBlock}>
+          <View style={styles.itemBlock} key={item.id}>
             <Text style={styles.itemTitle}>{item.name}</Text>
 
             <ItemRow label="Начало" text={item.start} />

@@ -2,6 +2,8 @@ import axios from "axios";
 import strings from "../../utils/strings";
 import moment from "moment";
 
+import {Alert} from "react-native";
+
 import {getTrainings} from "./trainings";
 
 export const GET_ENROLLMENT = 'GET_ENROLLMENT';
@@ -45,6 +47,7 @@ export function addEnrollment(trainingId, date, gymId) {
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
+          Alert.alert(response.data.message);
           dispatch(getTrainings(gymId, date));
         }
       })
@@ -65,6 +68,7 @@ export function removeEnrollment(trainingId, gymsIds) {
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
+          Alert.alert(response.data.message);
           dispatch(getEnrollment(gymsIds.join(',')));
         }
       })
